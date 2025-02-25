@@ -19,23 +19,8 @@ if($_SESSION["USER"]){
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <!-- header -->
-    <div id="header">
-    <div class="logo">
-        <a href="index.php">LOGO</a>
-    </div>
-    <div>
-        <a href="menu.php">Menu</a>
-        <a href="promo.php">Promo</a>
-        <a href="voucherku.php">Voucherku</a>
-    </div>
-    <div class="login">
-        <a href="login.php">Login</a>
-    </div>
-    </div>
-
     <div id="content">
-        <h1>Home</h1>
+        <h1>Admin</h1>
         <p><?=$message?></p>
     </div>
 </body>

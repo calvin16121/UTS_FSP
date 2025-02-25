@@ -1,13 +1,6 @@
-<?php
-session_start();
-
+<?
 $mysqli = new mysqli("localhost","root","","fullstack");
 if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
-
-$message = "Welcome";
-if($_SESSION["USER"]){
-    $message = "Welcome, ".$_SESSION["USER"];
-}
 ?>
 
 <!DOCTYPE html>
@@ -35,10 +28,9 @@ if($_SESSION["USER"]){
     </div>
 
     <div id="content">
-        <h1>Home</h1>
-        <p><?=$message?></p>
+        <h1>Voucherku</h1>
     </div>
 </body>
 </html>
 
-<?php $mysqli->close();?>
+<? $mysqli->close();?>
