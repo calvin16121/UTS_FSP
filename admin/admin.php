@@ -22,6 +22,13 @@ if($_SESSION["USER"]){
     <div id="content">
         <h1>Admin</h1>
         <p><?=$message?></p>
+        <a href="jenismenu.php">Kelola jenis menu</a>
+        <br>
+        <a href="menu.php">Kelola menu</a>
+        <br>
+        <a href="voucher.php">Kelola voucher</a>
+        <br>
+        <a href="member.php">Kelola member</a>
     </div>
 </body>
 </html>
