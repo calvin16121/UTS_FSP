@@ -93,6 +93,7 @@ if(isset($_GET['kode'])){
             <th>Harga</th>
             <th>Gambar</th>
             <th>Hapus</th>
+            <th>Ubah</th>
         </tr>";
     while($row = $res->fetch_assoc()) {
         echo 
@@ -108,6 +109,7 @@ if(isset($_GET['kode'])){
             
         echo "
         <td> <a href='menu.php?kode=" . $row['kode'] . "'>Hapus Data</a> </td>
+        <td> <a href='ubahmenu.php?kode=" . $row['kode'] . "'>Ubah Data</a> </td>
         </tr>";
     }
     echo "</table>";

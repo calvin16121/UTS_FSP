@@ -37,7 +37,7 @@ if(isset($_GET['kode'])){
     <form action="jenismenu.php" method="post">
         <label for="nama">Masukan Jenis Menu: </label>
         <input type="text" name="nama">
-        <input type="submit" value="submit" name="insert">
+        <input type="submit" value="insert" name="insert">
     </form>
     <p><?=$message?></p>
 
@@ -51,11 +51,13 @@ if(isset($_GET['kode'])){
         <tr>
             <th>Nama</th>
             <th>Hapus</th>
+            <th>Ubah</th>
         </tr>";
     while($row = $res->fetch_assoc()) {
         echo "<tr>
                 <td>".$row['nama']."</td>
                 <td> <a href='jenismenu.php?kode=" . $row['kode'] . "'>Hapus Data</a> </td>
+                <td> <a href='ubahjenismenu.php?kode=" . $row['kode'] . "'>Ubah Data</a> </td>
             </tr>";
     }
     echo "</ul>";

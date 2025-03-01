@@ -117,6 +117,7 @@ if(isset($_GET['kode'])){
             <th>Kuota Sisa</th>
             <th>Diskon</th>
             <th>Hapus</th>
+            <th>Ubah</th>
         </tr>";
     while($row = $res->fetch_assoc()) {
         echo 
@@ -132,6 +133,7 @@ if(isset($_GET['kode'])){
             <td>".$row['kuota_sisa']."</td>
             <td>".$row['persen_diskon']."</td>
             <td> <a href='voucher.php?kode=" . $row['kode'] . "'>Hapus Data</a> </td>
+            <td> <a href='ubahvoucher.php?kode=" . $row['kode'] . "'>Ubah Data</a> </td>
         </tr>";
     }
     echo "</table>";
