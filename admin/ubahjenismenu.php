@@ -14,6 +14,7 @@ $nama = $row['nama'];
 $stmt->close();
 
 if(isset($_POST['update'])){
+    $kode = $_POST['kode'];
     $nama = $_POST['nama'];
     $stmt = $mysqli->prepare("UPDATE `menu_jenis` SET `nama` = ? WHERE (`kode` = ?);");
     $stmt->bind_param('si',$nama,$kode);
@@ -37,6 +38,7 @@ if(isset($_POST['update'])){
     <a href="admin.php">admin page</a>
     <h1>Update jenis menu: <?=$nama?></h1>
     <form action="ubahjenismenu.php?kode=<?=$kode?>" method="post">
+        <input type="hidden" name="kode" value="<?=$kode?>">
         <label for="nama">Masukan Jenis Menu: </label>
         <input type="text" name="nama" value="<?=$nama?>">
         <input type="submit" value="update" name="update">

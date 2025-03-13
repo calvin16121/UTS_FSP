@@ -17,6 +17,7 @@ $gambar = $row['url_gambar'];
 $stmt->close();
 
 if(isset($_POST['update'])){
+    $kode = $_POST['kode'];
     $nama = $_POST['nama'];
     $jenis = $_POST['jenis'];
     $harga = $_POST['harga'];
@@ -55,7 +56,8 @@ if(isset($_POST['update'])){
     <div>
     <a href="admin.php">admin page</a>
     <h1>Update menu: <?=$nama?></h1>
-    <form action="ubahmenu.php?kode=<?=$kode?>"  method="post" enctype="multipart/form-data">
+    <form action="ubahmenu.php"  method="post" enctype="multipart/form-data">
+        <input type="hidden" name="kode" value="<?=$kode?>">
         <label for="nama">Nama Menu: </label>
         <input type="text" name="nama" value="<?=$nama?>" required>
         <br>
