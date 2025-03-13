@@ -18,7 +18,13 @@ $end = $row["akhir_berlaku"];
 $kuota = $row["kuota_max"];
 $diskon = $row["persen_diskon"];
 
+$start = date('Y-m-d', strtotime($start));
+$end = date('Y-m-d', strtotime($end));
+
+$stmt->close();
+
 if(isset($_POST['update'])){
+    $kode = $_POST['kode'];
     $nama = $_POST['nama'];
     $jenis = $_POST['jenis'] ?? "";
     $menu = $_POST['menu'] ?? "";
@@ -38,6 +44,7 @@ if(isset($_POST['update'])){
                 WHERE (`kode` = ?);");
     $stmt->bind_param('iisssiii',$menu,$jenis, $nama, $start, $end, $kuota, $diskon, $kode);
     $stmt->execute();
+    $stmt->close();
     header("Location: voucher.php");
     exit;
 }
@@ -55,7 +62,9 @@ if(isset($_POST['update'])){
     <div>
     <a href="admin.php">admin page</a>
     <h1>Update Voucher: <?=$nama?></h1>
-    <form action="ubahvoucher.php?kode=<?=$kode?>" method="post">
+    <form action="ubahvoucher.php" method="post">
+        <input type="hidden" name="kode" value="<?=$kode?>">
+
         <label for="nama">Nama Voucher: </label>
         <input type="text" name="nama" value="<?=$nama?>">
 
@@ -71,6 +80,7 @@ if(isset($_POST['update'])){
                 echo ($row['kode']==$jenis)?
                 "<option value=".$row["kode"]." selected>".$row['nama']."</option>":
                 "<option value=".$row["kode"].">".$row['nama']."</option>";}
+            $stmt->close();
             ?>
         </select>
 
@@ -86,16 +96,17 @@ if(isset($_POST['update'])){
                 echo ($row['kode']==$menu)?
                 "<option value=".$row["kode"]." selected>".$row['nama']."</option>":
                 "<option value=".$row["kode"].">".$row['nama']."</option>";}
+            $stmt->close();
             ?>
         </select>
 
         <br>
         <label for="start">Tanggal mulai: </label>
-        <input type="date" name="start" defaultValue="<?=$start?>">
+        <input type="date" name="start" value="<?=htmlspecialchars($start)?>">
 
         <br>
         <label for="end">Tanggal berakhir: </label>
-        <input type="date" name="end" defaultValue="<?=$end?>">
+        <input type="date" name="end" value="<?=htmlspecialchars($end)?>">
 
         <br>
         <label for="kuota">Kuota maks: </label>

@@ -14,6 +14,7 @@ $nama = $row['nama'];
 $jenis = $row['kode_jenis'];
 $harga = $row['harga_jual'];
 $gambar = $row['url_gambar'];
+$stmt->close();
 
 if(isset($_POST['update'])){
     $nama = $_POST['nama'];
@@ -27,6 +28,7 @@ if(isset($_POST['update'])){
         WHERE (`kode` = ?);");
     $stmt->bind_param('isdi',$jenis,$nama, $harga, $kode);
     $stmt->execute();
+    $stmt->close();
 
     if(isset($_FILES['gambar'])){
         if (file_exists("../images/" . $gambar)) {
@@ -67,6 +69,7 @@ if(isset($_POST['update'])){
             { echo ($row["kode"]==$jenis)?
             "<option value=".$row["kode"]." selected>".$row['nama']."</option>":
             "<option value=".$row["kode"].">".$row['nama']."</option>";}
+            $stmt->close();
             ?>
         </select>
         <br>

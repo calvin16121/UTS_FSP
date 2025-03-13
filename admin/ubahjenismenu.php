@@ -11,12 +11,14 @@ $stmt->execute();
 $res = $stmt->get_result();
 $row = $res->fetch_assoc();
 $nama = $row['nama'];
+$stmt->close();
 
 if(isset($_POST['update'])){
     $nama = $_POST['nama'];
     $stmt = $mysqli->prepare("UPDATE `menu_jenis` SET `nama` = ? WHERE (`kode` = ?);");
     $stmt->bind_param('si',$nama,$kode);
     $stmt->execute();
+    $stmt->close();
     header("Location: jenismenu.php");
     exit;
 }

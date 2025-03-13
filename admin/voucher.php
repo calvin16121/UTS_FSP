@@ -20,6 +20,7 @@ if(isset($_POST['insert'])){
         VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
     $stmt->bind_param('iisssiii',$menu,$jenis, $nama, $start, $end, $kuota, $kuota, $diskon);
     $stmt->execute();
+    $stmt->close();
     $message = "Data ".$nama." inserted successfully";
 }
 
@@ -28,6 +29,7 @@ if(isset($_GET['kode'])){
     $stmt = $mysqli->prepare("DELETE FROM `voucher` WHERE (`kode` = ?);");
     $stmt->bind_param('i',$kode);
     $stmt->execute();
+    $stmt->close();
     header("Location: voucher.php");
 }
 ?>
@@ -57,6 +59,7 @@ if(isset($_GET['kode'])){
             $stmt->execute();
             $res = $stmt->get_result();
             while($row = $res->fetch_assoc()) { echo "<option value=".$row["kode"].">".$row['nama']."</option>";}
+            $stmt->close();
             ?>
         </select>
 
@@ -69,6 +72,7 @@ if(isset($_GET['kode'])){
             $stmt->execute();
             $res = $stmt->get_result();
             while($row = $res->fetch_assoc()) { echo "<option value=".$row["kode"].">".$row['nama']."</option>";}
+            $stmt->close();
             ?>
         </select>
 

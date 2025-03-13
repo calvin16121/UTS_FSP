@@ -21,10 +21,12 @@ if(isset($_POST['insert'])){
         $stmt2 = $mysqli->prepare("UPDATE `menu` SET `url_gambar` = ? WHERE `kode` = ?;");
         $stmt2->bind_param('si',$url,$last_id);
         $stmt2->execute();
+        $stmt2->close();
 
         move_uploaded_file($gambar['tmp_name'],"../".$url);
         echo "Data $nama inserted successfully!";
     } else { echo "Error: " . $stmt->error; }
+    $stmt->close();
 }
 
 if(isset($_GET['kode'])){
@@ -34,6 +36,7 @@ if(isset($_GET['kode'])){
     $stmt = $mysqli->prepare("DELETE FROM `menu` WHERE (`kode` = ?);");
     $stmt->bind_param('i',$kode);
     $stmt->execute();
+    $stmt->close();
     header("Location: menu.php");
 }
 ?>
@@ -62,6 +65,7 @@ if(isset($_GET['kode'])){
             $stmt->execute();
             $res = $stmt->get_result();
             while($row = $res->fetch_assoc()) { echo "<option value=".$row["kode"].">".$row['nama']."</option>";}
+            $stmt->close();
             ?>
         </select>
         <br>
@@ -113,6 +117,7 @@ if(isset($_GET['kode'])){
         </tr>";
     }
     echo "</table>";
+    $stmt->close();
     ?>
     </div>
 </body>

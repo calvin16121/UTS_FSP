@@ -10,6 +10,7 @@ if(isset($_POST['insert'])){
     $stmt = $mysqli->prepare("INSERT INTO `menu_jenis` (`nama`) VALUES (?);");
     $stmt->bind_param('s',$nama);
     $stmt->execute();
+    $stmt->close();
     $message = "Data ".$nama." inserted successfully";
 }
 
@@ -18,6 +19,7 @@ if(isset($_GET['kode'])){
     $stmt = $mysqli->prepare("DELETE FROM `menu_jenis` WHERE (`kode` = ?);");
     $stmt->bind_param('i',$kode);
     $stmt->execute();
+    $stmt->close();
     header("Location: jenismenu.php");
 }
 ?>
@@ -61,6 +63,7 @@ if(isset($_GET['kode'])){
             </tr>";
     }
     echo "</ul>";
+    $stmt->close();
     ?>
     </div>
 </body>
