@@ -16,7 +16,7 @@ if(isset($_POST['insert'])){
     if ($stmt->execute()) {
         $last_id = $stmt->insert_id;
         $ext = pathinfo($gambar['name'],PATHINFO_EXTENSION);
-        $url = "images/".$last_id.".".$ext;
+        $url = "images/".time() . '_' . $_FILES['gambar']['name'];
 
         $stmt2 = $mysqli->prepare("UPDATE `menu` SET `url_gambar` = ? WHERE `kode` = ?;");
         $stmt2->bind_param('si',$url,$last_id);
@@ -31,8 +31,13 @@ if(isset($_POST['insert'])){
 
 if(isset($_GET['kode'])){
     $kode = $_GET['kode'];
-    if(file_exists("../images/".$kode.".png")){unlink("../images/".$kode.".png");}
-    elseif(file_exists("../images/".$kode.".jpeg")){unlink("../images/".$kode.".jpeg");}
+    $stmt = $mysqli->prepare("SELECT `url_gambar` FROM `menu` WHERE (`kode` = ?);");
+    $stmt->bind_param('i',$kode);
+    $stmt->execute();
+    $gambar = $stmt->get_result();
+    $gambar = $gambar->fetch_assoc();
+    $stmt->close();
+    if(file_exists("../".$gambar['url_gambar'])){unlink("../".$gambar['url_gambar']);}
     $stmt = $mysqli->prepare("DELETE FROM `menu` WHERE (`kode` = ?);");
     $stmt->bind_param('i',$kode);
     $stmt->execute();
@@ -89,6 +94,21 @@ if(isset($_GET['kode'])){
                 ");
     $stmt->execute();
     $res = $stmt->get_result();
+    $jmlh = $res->num_rows;
+    $stmt->close();
+
+    $limit = 5;
+    (isset($_GET['page']))? $page = $_GET['page'] : $page=1;
+    $offset = ($page-1)*$limit;
+    $stmt = $mysqli->prepare(
+        "SELECT m.kode, m.nama as nama_m,mj.nama AS nama_mj,m.harga_jual,m.url_gambar 
+                FROM menu_jenis AS mj 
+                INNER JOIN menu AS m 
+                ON m.kode_jenis = mj.kode LIMIT ?,?;
+                ");
+    $stmt->bind_param('ii',$offset,$limit);
+    $stmt->execute();
+    $res = $stmt->get_result();
 
     echo "<table>
         <tr>
@@ -117,6 +137,21 @@ if(isset($_GET['kode'])){
         </tr>";
     }
     echo "</table>";
+    
+    $max_page = ceil($jmlh/$limit);
+    echo "<div>";
+    if($page!=1){
+        echo "<a href="."menu.php?page=1> first </a>
+        <a href="."menu.php?page=".($page-1)."> prev </a>";
+    }
+    for($i=1;$i<=$max_page;$i++){
+        echo ($i!=$page)?"<a href="."menu.php?page=".$i."> ".$i." </a>":"<a> ".$i." </a>";
+    }
+    if($page!=$max_page){
+        echo "<a href="."menu.php?page=".($page+1)."> next </a>
+        <a href="."menu.php?page=".$max_page."> last </a>";
+    }
+    echo "</div>";
     $stmt->close();
     ?>
     </div>

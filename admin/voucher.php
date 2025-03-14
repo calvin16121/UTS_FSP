@@ -99,6 +99,7 @@ if(isset($_GET['kode'])){
 
     <h2>Voucher yang tersedia:</h2>
     <?php 
+    
     $stmt = $mysqli->prepare(
         "SELECT v.nama AS vnama, m.nama AS mnama, mj.nama AS mjnama, v.*
                 FROM voucher AS v 
@@ -107,6 +108,23 @@ if(isset($_GET['kode'])){
                 LEFT JOIN menu_jenis AS mj
                 ON v.kode_jenis = mj.kode;
                 ");
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $jmlh = $res->num_rows;
+    $stmt->close();
+
+    $limit = 5;
+    (isset($_GET['page']))? $page = $_GET['page'] : $page=1;
+    $offset = ($page-1)*$limit;
+    $stmt = $mysqli->prepare(
+        "SELECT v.nama AS vnama, m.nama AS mnama, mj.nama AS mjnama, v.*
+                FROM voucher AS v 
+                LEFT JOIN menu AS m 
+                ON v.kode_menu = m.kode
+                LEFT JOIN menu_jenis AS mj
+                ON v.kode_jenis = mj.kode LIMIT ?,?;
+                ");
+    $stmt->bind_param('ii',$offset,$limit);
     $stmt->execute();
     $res = $stmt->get_result();
 
@@ -141,6 +159,21 @@ if(isset($_GET['kode'])){
         </tr>";
     }
     echo "</table>";
+    
+    $max_page = ceil($jmlh/$limit);
+    echo "<div>";
+    if($page!=1){
+        echo "<a href="."voucher.php?page=1> first </a>
+        <a href="."menu.php?page=".($page-1)."> prev </a>";
+    }
+    for($i=1;$i<=$max_page;$i++){
+        echo ($i!=$page)?"<a href="."voucher.php?page=".$i."> ".$i." </a>":"<a> ".$i." </a>";
+    }
+    if($page!=$max_page){
+        echo "<a href="."voucher.php?page=".($page+1)."> next </a>
+        <a href="."voucher.php?page=".$max_page."> last </a>";
+    }
+    echo "</div>";
     ?>
     </div>
 </body>

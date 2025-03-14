@@ -21,6 +21,7 @@ if(isset($_POST['update'])){
     $nama = $_POST['nama'];
     $jenis = $_POST['jenis'];
     $harga = $_POST['harga'];
+    $gambar_old = $_POST['gambar_old'];
     $stmt = $mysqli->prepare(
         "UPDATE `menu` SET 
         `kode_jenis` = ?, 
@@ -31,12 +32,21 @@ if(isset($_POST['update'])){
     $stmt->execute();
     $stmt->close();
 
-    if(isset($_FILES['gambar'])){
-        if (file_exists("../images/" . $gambar)) {
-            unlink("../images/" . $gambar);
+    if(isset($_FILES['gambar_new']) && $_FILES['gambar_new']['size']>0) {
+        $old_image_path = "../" . $gambar_old;
+        if (file_exists($old_image_path)) {
+            unlink($old_image_path);
         }
-        $img = $_FILES['gambar'];
-        move_uploaded_file($img['tmp_name'],"../".$gambar);
+        
+        $new_filename = time() . '_' . $_FILES['gambar_new']['name'];
+        $new_path = "images/" . $new_filename;
+        
+        if(move_uploaded_file($_FILES['gambar_new']['tmp_name'], "../" . $new_path)) {
+            $stmt = $mysqli->prepare("UPDATE `menu` SET `url_gambar` = ? WHERE (`kode` = ?);");
+            $stmt->bind_param('si', $new_path, $kode);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 
     header("Location: menu.php");
@@ -58,6 +68,8 @@ if(isset($_POST['update'])){
     <h1>Update menu: <?=$nama?></h1>
     <form action="ubahmenu.php"  method="post" enctype="multipart/form-data">
         <input type="hidden" name="kode" value="<?=$kode?>">
+        <input type="hidden" name="gambar_old" value="<?=$gambar?>">
+
         <label for="nama">Nama Menu: </label>
         <input type="text" name="nama" value="<?=$nama?>" required>
         <br>
@@ -84,7 +96,7 @@ if(isset($_POST['update'])){
         <br>
         <br>
         <label for="gambar">Gambar baru</label>
-        <input type="file" name="gambar" accept="image/jpeg, image/png">
+        <input type="file" name="gambar_new" accept="image/jpeg, image/png">
         <br>
         <br>
         <input type="submit" value="update" name="update">
