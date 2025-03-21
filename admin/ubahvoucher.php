@@ -4,24 +4,26 @@ session_start();
 $mysqli = new mysqli("localhost","root","","fullstack");
 if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
 $message = "";
-$kode = $_GET['kode'];
-$stmt = $mysqli->prepare("SELECT * FROM `voucher` WHERE (`kode` = ?);");
-$stmt->bind_param('i',$kode);
-$stmt->execute();
-$res = $stmt->get_result();
-$row = $res->fetch_assoc();
-$nama = $row['nama'];
-$jenis = $row['kode_jenis'] ?? "";
-$menu = $row['kode_menu'] ?? "";
-$start = $row["mulai_berlaku"];
-$end = $row["akhir_berlaku"];
-$kuota = $row["kuota_max"];
-$diskon = $row["persen_diskon"];
-
-$start = date('Y-m-d', strtotime($start));
-$end = date('Y-m-d', strtotime($end));
-
-$stmt->close();
+if(isset($_GET['kode'])){
+    $kode = $_GET['kode'];
+    $stmt = $mysqli->prepare("SELECT * FROM `voucher` WHERE (`kode` = ?);");
+    $stmt->bind_param('i',$kode);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+    $nama = $row['nama'];
+    $jenis = $row['kode_jenis'] ?? "";
+    $menu = $row['kode_menu'] ?? "";
+    $start = $row["mulai_berlaku"];
+    $end = $row["akhir_berlaku"];
+    $kuota = $row["kuota_max"];
+    $diskon = $row["persen_diskon"];
+    
+    $start = date('Y-m-d', strtotime($start));
+    $end = date('Y-m-d', strtotime($end));
+    
+    $stmt->close();
+}
 
 if(isset($_POST['update'])){
     $kode = $_POST['kode'];
@@ -32,19 +34,52 @@ if(isset($_POST['update'])){
     $end = $_POST["end"];
     $kuota = $_POST["kuota"];
     $diskon = $_POST["diskon"];
-    $stmt = $mysqli->prepare(
-        "UPDATE `voucher` SET 
-                `kode_menu` = ?, 
-                `kode_jenis` = ?, 
-                `nama` = ?, 
-                `mulai_berlaku` = ?, 
-                `akhir_berlaku` = ?, 
-                `kuota_max` = ?,
-                `persen_diskon` = ? 
-                WHERE (`kode` = ?);");
-    $stmt->bind_param('iisssiii',$menu,$jenis, $nama, $start, $end, $kuota, $diskon, $kode);
-    $stmt->execute();
-    $stmt->close();
+    if($menu == ""){
+        $stmt = $mysqli->prepare(
+            "UPDATE `voucher` SET 
+                    `kode_jenis` = ?, 
+                    `nama` = ?, 
+                    `mulai_berlaku` = ?, 
+                    `akhir_berlaku` = ?, 
+                    `kuota_max` = ?,
+                    `kuota_sisa` = ?,
+                    `persen_diskon` = ? 
+                    WHERE (`kode` = ?);");
+        $stmt->bind_param('isssiiii',$jenis, $nama, $start, $end, $kuota,$kuota, $diskon, $kode);
+        $stmt->execute();
+        $stmt->close();
+    }
+    else if($jenis == ""){
+        $stmt = $mysqli->prepare(
+            "UPDATE `voucher` SET 
+                    `kode_menu` = ?, 
+                    `nama` = ?, 
+                    `mulai_berlaku` = ?, 
+                    `akhir_berlaku` = ?, 
+                    `kuota_max` = ?,
+                    `kuota_sisa` = ?,
+                    `persen_diskon` = ? 
+                    WHERE (`kode` = ?);");
+        $stmt->bind_param('isssiiii',$menu, $nama, $start, $end, $kuota,$kuota, $diskon, $kode);
+        $stmt->execute();
+        $stmt->close();
+    }
+    else{
+        $stmt = $mysqli->prepare(
+            "UPDATE `voucher` SET 
+                    `kode_menu` = ?,
+                    `kode_jenis` = ?,
+                    `nama` = ?, 
+                    `mulai_berlaku` = ?, 
+                    `akhir_berlaku` = ?, 
+                    `kuota_max` = ?,
+                    `kuota_sisa` = ?,
+                    `persen_diskon` = ? 
+                    WHERE (`kode` = ?);");
+        $stmt->bind_param('iisssiiii',$menu,$jenis, $nama, $start, $end, $kuota, $kuota, $diskon, $kode);
+        $stmt->execute();
+        $stmt->close();
+    }
     header("Location: voucher.php");
     exit;
 }
