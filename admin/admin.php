@@ -20,6 +20,7 @@ if($_SESSION["USER"]){
 </head>
 <body>
     <div id="content">
+        <a href="../index.php">home</a>
         <h1>Admin</h1>
         <p><?=$message?></p>
         <a href="jenismenu.php">Kelola jenis menu</a>

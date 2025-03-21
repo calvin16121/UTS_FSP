@@ -19,6 +19,7 @@ if (isset($_POST['login'])) {
     $stmt->bind_param('s', $iduser);
     $stmt->execute();
     $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
 
     if ($result) {
         $p = $result['password'];
@@ -73,6 +74,7 @@ if (isset($_POST['login'])) {
             <br>
             <input type="submit" value="login" name="login">
         </form>
+        <a href="register.php">register</a>
         <p><?=$message?></p>
     </div>
 </body>
