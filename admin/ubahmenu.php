@@ -1,20 +1,22 @@
 <?php
 session_start();
+require_once("../class/classMenu.php");
+require_once("../class/classJenisMenu.php");
 
-$mysqli = new mysqli("localhost","root","","fullstack");
-if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
 $message = "";
-$kode = $_GET['kode'];
-$stmt = $mysqli->prepare("SELECT * FROM `menu` WHERE (`kode` = ?);");
-$stmt->bind_param('i',$kode);
-$stmt->execute();
-$res = $stmt->get_result();
-$row = $res->fetch_assoc();
-$nama = $row['nama'];
-$jenis = $row['kode_jenis'];
-$harga = $row['harga_jual'];
-$gambar = $row['url_gambar'];
-$stmt->close();
+$menu = new classMenu();
+$jenisMenu = new classJenisMenu();
+
+$message = "";
+if(isset($_GET['kode'])){
+    $kode = $_GET['kode'];
+    $res = $menu->getMenuKode($kode);
+    $row = $res->fetch_assoc();
+    $nama = $row['nama'];
+    $jenis = $row['kode_jenis'];
+    $harga = $row['harga_jual'];
+    $gambar = $row['url_gambar'];
+}
 
 if(isset($_POST['update'])){
     $kode = $_POST['kode'];
@@ -22,33 +24,9 @@ if(isset($_POST['update'])){
     $jenis = $_POST['jenis'];
     $harga = $_POST['harga'];
     $gambar_old = $_POST['gambar_old'];
-    $stmt = $mysqli->prepare(
-        "UPDATE `menu` SET 
-        `kode_jenis` = ?, 
-        `nama` = ?, 
-        `harga_jual` = ? 
-        WHERE (`kode` = ?);");
-    $stmt->bind_param('isdi',$jenis,$nama, $harga, $kode);
-    $stmt->execute();
-    $stmt->close();
+    $gambar_new = $_FILES['gambar_new'];
 
-    if(isset($_FILES['gambar_new']) && $_FILES['gambar_new']['size']>0) {
-        $old_image_path = "../" . $gambar_old;
-        if (file_exists($old_image_path)) {
-            unlink($old_image_path);
-        }
-        
-        $new_filename = time() . '_' . $_FILES['gambar_new']['name'];
-        $new_path = "images/" . $new_filename;
-        
-        if(move_uploaded_file($_FILES['gambar_new']['tmp_name'], "../" . $new_path)) {
-            $stmt = $mysqli->prepare("UPDATE `menu` SET `url_gambar` = ? WHERE (`kode` = ?);");
-            $stmt->bind_param('si', $new_path, $kode);
-            $stmt->execute();
-            $stmt->close();
-        }
-    }
-
+    $menu->updateMenu($kode, $nama, $jenis, $harga, $gambar_old, $gambar_new);
     header("Location: menu.php");
     exit;
 }
@@ -76,14 +54,12 @@ if(isset($_POST['update'])){
         <label for="nama">Jenis Menu: </label>
         <select name="jenis">
             <?php
-            $stmt = $mysqli->prepare("SELECT * FROM menu_jenis");
-            $stmt->execute();
-            $res = $stmt->get_result();
+            echo "<option value='none' selected disabled hidden>Select an Option</option>";
+            $res = $jenisMenu->getJenisMenu();
             while($row = $res->fetch_assoc()) 
             { echo ($row["kode"]==$jenis)?
             "<option value=".$row["kode"]." selected>".$row['nama']."</option>":
             "<option value=".$row["kode"].">".$row['nama']."</option>";}
-            $stmt->close();
             ?>
         </select>
         <br>
@@ -105,5 +81,3 @@ if(isset($_POST['update'])){
     </div>
 </body>
 </html>
-
-<?php $mysqli->close();?>

@@ -1,16 +1,14 @@
 <?php
+require_once("../class/classVoucher.php");
 session_start();
-
-$mysqli = new mysqli("localhost","root","","fullstack");
-if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
+$voucher = new classVoucher();
 $message = "";
+
 if(isset($_GET['kode'])){
     $kode = $_GET['kode'];
-    $stmt = $mysqli->prepare("SELECT * FROM `voucher` WHERE (`kode` = ?);");
-    $stmt->bind_param('i',$kode);
-    $stmt->execute();
-    $res = $stmt->get_result();
+    $res = $voucher->getVoucherKode($kode);
     $row = $res->fetch_assoc();
+
     $nama = $row['nama'];
     $jenis = $row['kode_jenis'] ?? "";
     $menu = $row['kode_menu'] ?? "";
@@ -18,13 +16,11 @@ if(isset($_GET['kode'])){
     $end = $row["akhir_berlaku"];
     $kuota = $row["kuota_max"];
     $diskon = $row["persen_diskon"];
-    
     $start = date('Y-m-d', strtotime($start));
     $end = date('Y-m-d', strtotime($end));
-    
-    $stmt->close();
 }
 
+// buat update voucher
 if(isset($_POST['update'])){
     $kode = $_POST['kode'];
     $nama = $_POST['nama'];
@@ -34,52 +30,7 @@ if(isset($_POST['update'])){
     $end = $_POST["end"];
     $kuota = $_POST["kuota"];
     $diskon = $_POST["diskon"];
-    if($menu == ""){
-        $stmt = $mysqli->prepare(
-            "UPDATE `voucher` SET 
-                    `kode_jenis` = ?, 
-                    `nama` = ?, 
-                    `mulai_berlaku` = ?, 
-                    `akhir_berlaku` = ?, 
-                    `kuota_max` = ?,
-                    `kuota_sisa` = ?,
-                    `persen_diskon` = ? 
-                    WHERE (`kode` = ?);");
-        $stmt->bind_param('isssiiii',$jenis, $nama, $start, $end, $kuota,$kuota, $diskon, $kode);
-        $stmt->execute();
-        $stmt->close();
-    }
-    else if($jenis == ""){
-        $stmt = $mysqli->prepare(
-            "UPDATE `voucher` SET 
-                    `kode_menu` = ?, 
-                    `nama` = ?, 
-                    `mulai_berlaku` = ?, 
-                    `akhir_berlaku` = ?, 
-                    `kuota_max` = ?,
-                    `kuota_sisa` = ?,
-                    `persen_diskon` = ? 
-                    WHERE (`kode` = ?);");
-        $stmt->bind_param('isssiiii',$menu, $nama, $start, $end, $kuota,$kuota, $diskon, $kode);
-        $stmt->execute();
-        $stmt->close();
-    }
-    else{
-        $stmt = $mysqli->prepare(
-            "UPDATE `voucher` SET 
-                    `kode_menu` = ?,
-                    `kode_jenis` = ?,
-                    `nama` = ?, 
-                    `mulai_berlaku` = ?, 
-                    `akhir_berlaku` = ?, 
-                    `kuota_max` = ?,
-                    `kuota_sisa` = ?,
-                    `persen_diskon` = ? 
-                    WHERE (`kode` = ?);");
-        $stmt->bind_param('iisssiiii',$menu,$jenis, $nama, $start, $end, $kuota, $kuota, $diskon, $kode);
-        $stmt->execute();
-        $stmt->close();
-    }
+    $voucher->updateVoucher($jenis, $nama, $start, $end, $kuota,$kuota, $diskon, $kode);
     header("Location: voucher.php");
     exit;
 }
@@ -108,6 +59,7 @@ if(isset($_POST['update'])){
         <select name="jenis">
             <?php
             if($jenis==""){echo "<option value='none' selected disabled hidden>Select an Option</option>";};
+            echo "<option value='none'></option>";
             $stmt = $mysqli->prepare("SELECT * FROM menu_jenis");
             $stmt->execute();
             $res = $stmt->get_result();
@@ -124,6 +76,7 @@ if(isset($_POST['update'])){
         <select name="menu">
             <?php
             if($menu==""){echo "<option value='none' selected disabled hidden>Select an Option</option>";}
+            echo "<option value='none'></option>";
             $stmt = $mysqli->prepare("SELECT * FROM menu");
             $stmt->execute();
             $res = $stmt->get_result();

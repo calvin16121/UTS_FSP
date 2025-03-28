@@ -1,25 +1,19 @@
 <?php
+require_once("../class/classJenisMenu.php");
 session_start();
+$jenisMenu = new classJenisMenu();
 
-$mysqli = new mysqli("localhost","root","","fullstack");
-if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
 $message = "";
 
 if(isset($_POST['insert'])){
     $nama = $_POST['nama'];
-    $stmt = $mysqli->prepare("INSERT INTO `menu_jenis` (`nama`) VALUES (?);");
-    $stmt->bind_param('s',$nama);
-    $stmt->execute();
-    $stmt->close();
-    $message = "Data ".$nama." inserted successfully";
+    if(!is_null($jenisMenu->insertJenisMenu($nama))) 
+    {$message = "Data ".$nama." inserted successfully";}
 }
 
 if(isset($_GET['kode'])){
     $kode = $_GET['kode'];
-    $stmt = $mysqli->prepare("DELETE FROM `menu_jenis` WHERE (`kode` = ?);");
-    $stmt->bind_param('i',$kode);
-    $stmt->execute();
-    $stmt->close();
+    $jenisMenu->deleteJenisMenu($kode);
     header("Location: jenismenu.php");
 }
 ?>
@@ -44,20 +38,13 @@ if(isset($_GET['kode'])){
     <p><?=$message?></p>
 
     <h2>Jenis menu yang tersedia:</h2>
-    <?php 
-    $stmt = $mysqli->prepare("SELECT * FROM menu_jenis");
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $jmlh = $res->num_rows;
-    $stmt->close();
+    <?php
+    $jmlh = $jenisMenu->getTotalData();
 
     $limit = 5;
     (isset($_GET['page']))? $page = $_GET['page'] : $page=1;
     $offset = ($page-1)*$limit;
-    $stmt = $mysqli->prepare("SELECT * FROM menu_jenis LIMIT ?,?");
-    $stmt->bind_param('ii',$offset,$limit);
-    $stmt->execute();
-    $res = $stmt->get_result();
+    $res = $jenisMenu->getJenisMenu($offset,$limit);
 
     echo "<table>
         <tr>
@@ -88,10 +75,7 @@ if(isset($_GET['kode'])){
         <a href="."jenismenu.php?page=".$max_page."> last </a>";
     }
     echo "</div>";
-    $stmt->close();
     ?>
     </div>
 </body>
 </html>
-
-<?php $mysqli->close();?>

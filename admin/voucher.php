@@ -1,10 +1,15 @@
 <?php
+require_once("../class/classMenu.php");
+require_once("../class/classJenisMenu.php");
+require_once("../class/classVoucher.php");
 session_start();
 
-$mysqli = new mysqli("localhost","root","","fullstack");
-if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
+$jenisMenu = new classJenisMenu();
+$menu = new classMenu();
+$voucher = new classVoucher();
 $message = "";
 
+// buat insert voucher
 if(isset($_POST['insert'])){
     $nama = $_POST['nama'];
     $jenis = $_POST['jenis'] ?? null;
@@ -13,23 +18,18 @@ if(isset($_POST['insert'])){
     $end = $_POST['end'];
     $kuota = $_POST['kuota'];
     $diskon = $_POST['diskon'];
-    
-    $stmt = $mysqli->prepare(
-        "INSERT INTO `voucher` 
-        (`kode_menu`, `kode_jenis`, `nama`, `mulai_berlaku`, `akhir_berlaku`, `kuota_max`, `kuota_sisa`, `persen_diskon`) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?);");
-    $stmt->bind_param('iisssiii',$menu,$jenis, $nama, $start, $end, $kuota, $kuota, $diskon);
-    $stmt->execute();
-    $stmt->close();
-    $message = "Data ".$nama." inserted successfully";
+
+    if($start>$end){$message = "end date can't occur before start date";}
+    else if($menu == null && $jenis == null){$message = "null exception";}
+    else if(!is_null($voucher->insertVoucher($menu,$jenis, $nama, $start, $end, $kuota, $diskon))){
+        $message = "Data ".$nama." inserted successfully";
+    }
 }
 
+// buat delete voucher
 if(isset($_GET['kode'])){
     $kode = $_GET['kode'];
-    $stmt = $mysqli->prepare("DELETE FROM `voucher` WHERE (`kode` = ?);");
-    $stmt->bind_param('i',$kode);
-    $stmt->execute();
-    $stmt->close();
+    $voucher->deleteVoucher($kode);
     header("Location: voucher.php");
 }
 ?>
@@ -55,11 +55,9 @@ if(isset($_GET['kode'])){
         <select name="jenis">
             <?php
             echo "<option value='none' selected disabled hidden>Select an Option</option>";
-            $stmt = $mysqli->prepare("SELECT * FROM menu_jenis");
-            $stmt->execute();
-            $res = $stmt->get_result();
+            echo "<option value='none'></option>";
+            $res = $jenisMenu->getJenisMenu();
             while($row = $res->fetch_assoc()) { echo "<option value=".$row["kode"].">".$row['nama']."</option>";}
-            $stmt->close();
             ?>
         </select>
 
@@ -68,11 +66,10 @@ if(isset($_GET['kode'])){
         <select name="menu">
             <?php
             echo "<option value='none' selected disabled hidden>Select an Option</option>";
-            $stmt = $mysqli->prepare("SELECT * FROM menu");
-            $stmt->execute();
-            $res = $stmt->get_result();
-            while($row = $res->fetch_assoc()) { echo "<option value=".$row["kode"].">".$row['nama']."</option>";}
-            $stmt->close();
+            echo "<option value='none'></option>";
+            $res = $menu->getMenu();
+            while($row = $res->fetch_assoc()) 
+            {echo "<option value=".$row["kode"].">".$row['nama_m']."</option>";}
             ?>
         </select>
 
@@ -98,35 +95,13 @@ if(isset($_GET['kode'])){
     <p><?=$message?></p>
 
     <h2>Voucher yang tersedia:</h2>
-    <?php 
-    
-    $stmt = $mysqli->prepare(
-        "SELECT v.nama AS vnama, m.nama AS mnama, mj.nama AS mjnama, v.*
-                FROM voucher AS v 
-                LEFT JOIN menu AS m 
-                ON v.kode_menu = m.kode
-                LEFT JOIN menu_jenis AS mj
-                ON v.kode_jenis = mj.kode;
-                ");
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $jmlh = $res->num_rows;
-    $stmt->close();
+    <?php
+    $jmlh = $voucher->getTotalData();
 
     $limit = 5;
     (isset($_GET['page']))? $page = $_GET['page'] : $page=1;
     $offset = ($page-1)*$limit;
-    $stmt = $mysqli->prepare(
-        "SELECT v.nama AS vnama, m.nama AS mnama, mj.nama AS mjnama, v.*
-                FROM voucher AS v 
-                LEFT JOIN menu AS m 
-                ON v.kode_menu = m.kode
-                LEFT JOIN menu_jenis AS mj
-                ON v.kode_jenis = mj.kode LIMIT ?,?;
-                ");
-    $stmt->bind_param('ii',$offset,$limit);
-    $stmt->execute();
-    $res = $stmt->get_result();
+    $res = $voucher->getVoucher($offset,$limit);
 
     echo "<table>
         <tr>
@@ -159,7 +134,7 @@ if(isset($_GET['kode'])){
         </tr>";
     }
     echo "</table>";
-    
+
     $max_page = ceil($jmlh/$limit);
     echo "<div>";
     if($page!=1){
@@ -178,5 +153,3 @@ if(isset($_GET['kode'])){
     </div>
 </body>
 </html>
-
-<?php $mysqli->close();?>

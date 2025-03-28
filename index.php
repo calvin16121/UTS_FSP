@@ -20,7 +20,7 @@ if($_SESSION["USER"]){
 </head>
 <body>
     <!-- header -->
-    <div id="header">
+    <header id="header">
     <div class="logo">
         <a href="index.php">LOGO</a>
     </div>
@@ -32,8 +32,8 @@ if($_SESSION["USER"]){
     <div class="login">
         <a href="login.php">Login</a>
     </div>
-    </div>
-
+    </header>
+    
     <div id="content">
         <h1>Home</h1>
         <p><?=$message?></p>

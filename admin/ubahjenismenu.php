@@ -1,25 +1,16 @@
 <?php
+require_once("../class/classJenisMenu.php");
 session_start();
-
-$mysqli = new mysqli("localhost","root","","fullstack");
-if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
+$jenisMenu = new classJenisMenu();
 $message = "";
+
 $kode = $_GET['kode'];
-$stmt = $mysqli->prepare("SELECT * FROM `menu_jenis` WHERE (`kode` = ?);");
-$stmt->bind_param('i',$kode);
-$stmt->execute();
-$res = $stmt->get_result();
-$row = $res->fetch_assoc();
-$nama = $row['nama'];
-$stmt->close();
+$nama = $jenisMenu->getJenisMenuKode($kode);
 
 if(isset($_POST['update'])){
     $kode = $_POST['kode'];
     $nama = $_POST['nama'];
-    $stmt = $mysqli->prepare("UPDATE `menu_jenis` SET `nama` = ? WHERE (`kode` = ?);");
-    $stmt->bind_param('si',$nama,$kode);
-    $stmt->execute();
-    $stmt->close();
+    $jenisMenu->updateJenisMenu($nama, $kode);
     header("Location: jenismenu.php");
     exit;
 }
@@ -47,5 +38,3 @@ if(isset($_POST['update'])){
     </div>
 </body>
 </html>
-
-<?php $mysqli->close();?>

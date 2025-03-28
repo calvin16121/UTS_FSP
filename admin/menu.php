@@ -1,47 +1,28 @@
 <?php
 session_start();
+require_once("../class/classMenu.php");
+require_once("../class/classJenisMenu.php");
 
-$mysqli = new mysqli("localhost","root","","fullstack");
-if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
 $message = "";
+$menu = new classMenu();
+$jenisMenu = new classJenisMenu();
 
+// buat masukin menu
 if(isset($_POST['insert'])){
-    $kode_jenis = $_POST['jenis'];
+    $jenis = $_POST['jenis'];
     $nama = $_POST['nama'];
     $harga = $_POST['harga'];
     $gambar = $_FILES['gambar'];
 
-    $stmt = $mysqli->prepare("INSERT INTO `menu` (`kode_jenis`,`nama`,`harga_jual`) VALUES (?,?,?);");
-    $stmt->bind_param('isd',$kode_jenis,$nama, $harga);
-    if ($stmt->execute()) {
-        $last_id = $stmt->insert_id;
-        $ext = pathinfo($gambar['name'],PATHINFO_EXTENSION);
-        $url = "images/".time() . '_' . $_FILES['gambar']['name'];
-
-        $stmt2 = $mysqli->prepare("UPDATE `menu` SET `url_gambar` = ? WHERE `kode` = ?;");
-        $stmt2->bind_param('si',$url,$last_id);
-        $stmt2->execute();
-        $stmt2->close();
-
-        move_uploaded_file($gambar['tmp_name'],"../".$url);
+    if (!is_null($menu->insertMenu($jenis,$nama,$harga, $gambar))) {
         echo "Data $nama inserted successfully!";
-    } else { echo "Error: " . $stmt->error; }
-    $stmt->close();
+    }
 }
 
+// buat hapus menu
 if(isset($_GET['kode'])){
     $kode = $_GET['kode'];
-    $stmt = $mysqli->prepare("SELECT `url_gambar` FROM `menu` WHERE (`kode` = ?);");
-    $stmt->bind_param('i',$kode);
-    $stmt->execute();
-    $gambar = $stmt->get_result();
-    $gambar = $gambar->fetch_assoc();
-    $stmt->close();
-    if(file_exists("../".$gambar['url_gambar'])){unlink("../".$gambar['url_gambar']);}
-    $stmt = $mysqli->prepare("DELETE FROM `menu` WHERE (`kode` = ?);");
-    $stmt->bind_param('i',$kode);
-    $stmt->execute();
-    $stmt->close();
+    $menu->deleteMenu($kode);
     header("Location: menu.php");
 }
 ?>
@@ -66,11 +47,8 @@ if(isset($_GET['kode'])){
         <select name="jenis">
             <?php
             echo "<option value='none' selected disabled hidden>Select an Option</option>";
-            $stmt = $mysqli->prepare("SELECT * FROM menu_jenis");
-            $stmt->execute();
-            $res = $stmt->get_result();
+            $res = $jenisMenu->getJenisMenu();
             while($row = $res->fetch_assoc()) { echo "<option value=".$row["kode"].">".$row['nama']."</option>";}
-            $stmt->close();
             ?>
         </select>
         <br>
@@ -85,30 +63,13 @@ if(isset($_GET['kode'])){
     <p><?=$message?></p>
 
     <h2>Menu yang tersedia:</h2>
-    <?php 
-    $stmt = $mysqli->prepare(
-        "SELECT m.kode, m.nama as nama_m,mj.nama AS nama_mj,m.harga_jual,m.url_gambar 
-                FROM menu_jenis AS mj 
-                INNER JOIN menu AS m 
-                ON m.kode_jenis = mj.kode;
-                ");
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $jmlh = $res->num_rows;
-    $stmt->close();
+    <?php
+    $jmlh = $menu->getTotalData();
 
     $limit = 5;
     (isset($_GET['page']))? $page = $_GET['page'] : $page=1;
     $offset = ($page-1)*$limit;
-    $stmt = $mysqli->prepare(
-        "SELECT m.kode, m.nama as nama_m,mj.nama AS nama_mj,m.harga_jual,m.url_gambar 
-                FROM menu_jenis AS mj 
-                INNER JOIN menu AS m 
-                ON m.kode_jenis = mj.kode LIMIT ?,?;
-                ");
-    $stmt->bind_param('ii',$offset,$limit);
-    $stmt->execute();
-    $res = $stmt->get_result();
+    $res = $menu->getMenu($offset,$limit);
 
     echo "<table>
         <tr>
@@ -152,10 +113,7 @@ if(isset($_GET['kode'])){
         <a href="."menu.php?page=".$max_page."> last </a>";
     }
     echo "</div>";
-    $stmt->close();
     ?>
     </div>
 </body>
 </html>
-
-<?php $mysqli->close();?>

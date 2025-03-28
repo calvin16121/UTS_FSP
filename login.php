@@ -46,7 +46,7 @@ if (isset($_POST['login'])) {
 </head>
 <body>
     <!-- header -->
-    <div id="header">
+    <header id="header">
     <div class="logo">
         <a href="index.php">LOGO</a>
     </div>
@@ -58,7 +58,7 @@ if (isset($_POST['login'])) {
     <div class="login">
         <a href="login.php">Login</a>
     </div>
-    </div>
+    </header>
 
     <div id="content">
         <h1>Log in</h1>

@@ -13,7 +13,7 @@ if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_e
 </head>
 <body>
     <!-- header -->
-    <div id="header">
+    <header id="header">
     <div class="logo">
         <a href="index.php">LOGO</a>
     </div>
@@ -25,7 +25,7 @@ if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_e
     <div class="login">
         <a href="login.php">Login</a>
     </div>
-    </div>
+    </header>
 
     <div id="content">
         <h1>Voucherku</h1>
