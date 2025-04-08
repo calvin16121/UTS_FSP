@@ -1,43 +1,23 @@
 <?php
+require_once("class/classMember.php");
 session_start();
-
-$mysqli = new mysqli("localhost", "root", "", "fullstack");
-
-if ($mysqli->connect_errno) {
-    die("Failed to connect to MySQL: " . $mysqli->connect_error);
-}
+$member = new classMember();
 
 $message = "";
 
 if (isset($_POST['register'])) {
-    $iduser = $_POST["iduser"];
-    $stmt = $mysqli->prepare("SELECT * FROM users WHERE iduser=?");
-    $stmt->bind_param('s',$iduser);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $iduser = htmlentities($_POST["iduser"]);
 
-    if ($result->num_rows == 0) {
-        $password = $_POST["password"];
-        $nama = $_POST["nama"];
-        $tgllahir = $_POST["tgllahir"];
-        $foto = $_POST["foto"];
+    if ($member->checkIDUser($iduser)) {
+        $hash_password = password_hash(htmlentities($_POST["password"]),PASSWORD_DEFAULT);
+        $nama = htmlentities($_POST["nama"]);
+        $tgllahir =  htmlentities($_POST["tgllahir"]);
+        $foto =  htmlentities($_POST["foto"]);
         $profil = "Member";
         $status = 0;
 
-        $stmt = $mysqli->prepare("INSERT INTO `users` 
-        (`iduser`, `password`, `profil`) 
-        VALUES (?, ?, ?);");
-        $stmt->bind_param('sss', $iduser, $password, $profil);
-        $stmt->execute();
-
-        $stmt = $mysqli->prepare("INSERT INTO `member` 
-        (`iduser`, `nama`, `tanggal_lahir`, `url_foto`, `isaktif`) 
-        VALUES (?, ?, ?, ?, ?);");
-        $stmt->bind_param('ssssi', $iduser, $nama, $tgllahir, $foto, $status);
-        $stmt->execute();
-        $stmt->close();
-        header("Location: login.php");
-        exit();
+        if(!is_null($member->insertMember($iduser, $hash_password, $profil,$nama, $tgllahir, $foto, $status)))
+        {header("Location: login.php");exit();}
     } else { $message = "username already taken"; }
 }
 ?>
@@ -75,5 +55,3 @@ if (isset($_POST['register'])) {
     </div>
 </body>
 </html>
-
-<?php $mysqli->close(); ?>

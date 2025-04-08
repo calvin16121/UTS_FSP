@@ -9,30 +9,40 @@ if ($mysqli->connect_errno) {
 
 $message = "";
 $iduser = "";
-if($_COOKIE["USER"]){$iduser=$_COOKIE["USER"];}
+if(isset($_COOKIE["USER"])){$iduser=$_COOKIE["USER"];}
 
 if (isset($_POST['login'])) {
-    $iduser = $_POST["iduser"];
-    $password = $_POST["password"];
+    $iduser = $_POST["iduser"] ?? '';
+    $password = $_POST["password"] ?? '';
+    $remember = isset($_POST["remember"]);
 
-    $stmt = $mysqli->prepare("SELECT * FROM users WHERE iduser=?");
-    $stmt->bind_param('s', $iduser);
-    $stmt->execute();
-    $result = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
+    // Validate inputs
+    if (empty($iduser) || empty($password)) {
+        $message = "Username and password are required";
+    } else {
+        $stmt = $mysqli->prepare("SELECT * FROM users WHERE iduser=?");
+        $stmt->bind_param('s', $iduser);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
 
-    if ($result) {
-        $p = $result['password'];
-        if ($password == $result['password']) {
-            $_SESSION["USER"] = $iduser;
-            if (isset($_POST["remember"])) {
-                setcookie("USER", $iduser, time() + (86400 * 30), "/"); // Store for 30 days
+        if ($result) {
+            if (password_verify($password, $result['password'])) {
+                session_regenerate_id(true);
+                
+                $_SESSION["USER"] = $iduser;
+                if ($remember) {setcookie("USER", $iduser, time() + (86400 * 30), "/"); }
+
+                $redirect = ($result['profil'] == "Admin") ? "admin/admin.php" : "index.php";
+                header("Location: $redirect");
+                exit();
+            } else {
+                $message = "Incorrect username or password";
             }
-            if($result['profil']=="Admin"){header("Location: admin/admin.php");}
-            else{header("Location: index.php");}
-            exit();
-        } else { $message = "Incorrect username or password"; }
-    } else { $message = "Incorrect username or password"; }
+        } else {
+            $message = "Incorrect username or password 2";
+        }
+    }
 }
 ?>
 

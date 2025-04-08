@@ -1,4 +1,6 @@
 <?php
+
+use Vtiful\Kernel\Format;
 require_once("classDB.php");
 class classMember extends classDB{
     public function __construct() {
@@ -23,10 +25,34 @@ class classMember extends classDB{
 		return $res->num_rows;
 	}
 
-    public function insertMember(){}
+    public function insertMember($iduser, $password, $profil,$nama, $tgllahir, $foto, $status){
+        $stmt = $this->mysqli->prepare("INSERT INTO `users` 
+        (`iduser`, `password`, `profil`) 
+        VALUES (?, ?, ?);");
+        $stmt->bind_param('sss', $iduser, $password, $profil);
+        $stmt->execute();
+
+        $kode = "m".date("dhis");
+        $stmt = $this->mysqli->prepare("INSERT INTO `member` 
+        (`kode`,`iduser`, `nama`, `tanggal_lahir`, `url_foto`, `isaktif`) 
+        VALUES (?,?, ?, ?, ?, ?);");
+        $stmt->bind_param('sssssi', $kode, $iduser, $nama, $tgllahir, $foto, $status);
+        $stmt->execute();
+        $last_id = $stmt->insert_id;
+        $stmt->close();
+        return $last_id;
+    }
 
     public function deleteMember($kode){}
 
     public function updateMember(){}
+
+    public function checkIDUser($iduser){
+        $stmt = $this->mysqli->prepare("SELECT * FROM users WHERE iduser=?");
+        $stmt->bind_param('s',$iduser);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->num_rows == 0;
+    } 
 }
 ?>
