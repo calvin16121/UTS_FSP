@@ -1,7 +1,7 @@
 <?php
-require_once("class/classMember.php");
+require_once("class/classUser.php");
 session_start();
-$member = new classMember();
+$member = new classUser();
 
 $message = "";
 

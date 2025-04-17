@@ -5,9 +5,8 @@ $mysqli = new mysqli("localhost","root","","fullstack");
 if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
 
 $message = "Welcome";
-if($_SESSION["USER"]){
-    $message = "Welcome, ".$_SESSION["USER"];
-}
+if($_SESSION["USER"]){ $message = "Welcome, ".$_SESSION["USER"]; }
+else{ header("location: login.php"); }
 ?>
 
 <!DOCTYPE html>
@@ -28,9 +27,7 @@ if($_SESSION["USER"]){
         <a href="menu.php">Menu</a>
         <a href="promo.php">Promo</a>
         <a href="voucherku.php">Voucherku</a>
-    </div>
-    <div class="login">
-        <a href="login.php">Login</a>
+        <a href="logout.php">Log out</a>
     </div>
     </header>
     

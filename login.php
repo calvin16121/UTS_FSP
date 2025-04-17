@@ -1,11 +1,7 @@
 <?php
 session_start();
-
-$mysqli = new mysqli("localhost", "root", "", "fullstack");
-
-if ($mysqli->connect_errno) {
-    die("Failed to connect to MySQL: " . $mysqli->connect_error);
-}
+require_once("class/classUser.php");
+$user = new classUser();
 
 $message = "";
 $iduser = "";
@@ -20,28 +16,20 @@ if (isset($_POST['login'])) {
     if (empty($iduser) || empty($password)) {
         $message = "Username and password are required";
     } else {
-        $stmt = $mysqli->prepare("SELECT * FROM users WHERE iduser=?");
-        $stmt->bind_param('s', $iduser);
-        $stmt->execute();
-        $result = $stmt->get_result()->fetch_assoc();
-        $stmt->close();
-
-        if ($result) {
+        $result = $user->login($iduser);
+            if($result['profil']=='Member' && $result['isaktif']==0) { $message = "Wait for admin to accept your registration"; }
+            else if ($result) {
             if (password_verify($password, $result['password'])) {
                 session_regenerate_id(true);
                 
                 $_SESSION["USER"] = $iduser;
                 if ($remember) {setcookie("USER", $iduser, time() + (86400 * 30), "/"); }
 
-                $redirect = ($result['profil'] == "Admin") ? "admin/admin.php" : "index.php";
+                $redirect = ($result['profil'] == "Admin") ? "admin/index.php" : "index.php";
                 header("Location: $redirect");
                 exit();
-            } else {
-                $message = "Incorrect username or password";
-            }
-        } else {
-            $message = "Incorrect username or password 2";
-        }
+            } else { $message = "Incorrect username or password"; }
+        } else { $message = "Incorrect username or password"; }
     }
 }
 ?>
@@ -56,7 +44,7 @@ if (isset($_POST['login'])) {
 </head>
 <body>
     <!-- header -->
-    <header id="header">
+    <!-- <header id="header">
     <div class="logo">
         <a href="index.php">LOGO</a>
     </div>
@@ -68,7 +56,7 @@ if (isset($_POST['login'])) {
     <div class="login">
         <a href="login.php">Login</a>
     </div>
-    </header>
+    </header> -->
 
     <div id="content">
         <h1>Log in</h1>
@@ -89,5 +77,3 @@ if (isset($_POST['login'])) {
     </div>
 </body>
 </html>
-
-<?php $mysqli->close(); ?>

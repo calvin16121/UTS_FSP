@@ -1,12 +1,11 @@
 <?php
 session_start();
 
-$mysqli = new mysqli("localhost","root","","fullstack");
-if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
-
 $message = "Welcome";
-if($_SESSION["USER"]){
+if($_SESSION["USER"]=="admin"){
     $message = "Welcome, ".$_SESSION["USER"];
+} else{
+    header("location: ../logout.php");
 }
 ?>
 
@@ -20,7 +19,7 @@ if($_SESSION["USER"]){
 </head>
 <body>
     <div id="content">
-        <a href="../index.php">home</a>
+        <a href="../logout.php">logout</a>
         <h1>Admin</h1>
         <p><?=$message?></p>
         <a href="jenismenu.php">Kelola jenis menu</a>
@@ -33,5 +32,3 @@ if($_SESSION["USER"]){
     </div>
 </body>
 </html>
-
-<?php $mysqli->close();?>

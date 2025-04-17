@@ -1,0 +1,28 @@
+admin login:
+username: admin
+password: xxx
+
+
+user login:
+username: m1
+password: member1
+
+username: m2*
+password: member2
+
+username: m3*
+password: member3
+
+username: m4*
+password: member4
+
+username: m5*
+password: member5
+
+username: m6*
+password: member6
+
+username: m7*
+password: member7
+
+yang dibintangi (*) belum aktif secara default

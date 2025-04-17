@@ -100,19 +100,21 @@ if(isset($_GET['kode'])){
     echo "</table>";
     
     $max_page = ceil($jmlh/$limit);
-    echo "<div>";
-    if($page!=1){
-        echo "<a href="."menu.php?page=1> first </a>
-        <a href="."menu.php?page=".($page-1)."> prev </a>";
+    if($max_page > 1){
+        echo "<div>";
+        if($page!=1){
+            echo "<a href="."menu.php?page=1> first </a>
+            <a href="."menu.php?page=".($page-1)."> prev </a>";
+        }
+        for($i=1;$i<=$max_page;$i++){
+            echo ($i!=$page)?"<a href="."menu.php?page=".$i."> ".$i." </a>":"<a> ".$i." </a>";
+        }
+        if($page!=$max_page){
+            echo "<a href="."menu.php?page=".($page+1)."> next </a>
+            <a href="."menu.php?page=".$max_page."> last </a>";
+        }
+        echo "</div>";
     }
-    for($i=1;$i<=$max_page;$i++){
-        echo ($i!=$page)?"<a href="."menu.php?page=".$i."> ".$i." </a>":"<a> ".$i." </a>";
-    }
-    if($page!=$max_page){
-        echo "<a href="."menu.php?page=".($page+1)."> next </a>
-        <a href="."menu.php?page=".$max_page."> last </a>";
-    }
-    echo "</div>";
     ?>
     </div>
 </body>
