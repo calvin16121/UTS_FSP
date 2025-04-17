@@ -37,7 +37,7 @@ if(isset($_GET['kode'])){
 </head>
 <body>
     <div>
-    <a href="admin.php">admin page</a>
+    <a href="index.php">admin page</a>
     <h1>Kelola menu</h1>
     <form action="menu.php" method="post" enctype="multipart/form-data">
         <label for="nama">Nama Menu: </label>

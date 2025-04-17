@@ -4,8 +4,8 @@ require_once("../class/classJenisMenu.php");
 require_once("../class/classVoucher.php");
 session_start();
 
-$jenisMenu = new classJenisMenu();
-$menu = new classMenu();
+$_JenisMenu = new classJenisMenu();
+$_Menu = new classMenu();
 $voucher = new classVoucher();
 $message = "";
 
@@ -44,7 +44,7 @@ if(isset($_GET['kode'])){
 </head>
 <body>
     <div>
-    <a href="admin.php">admin page</a>
+    <a href="index.php">admin page</a>
     <h1>Kelola Voucher</h1>
     <form action="voucher.php" method="post">
         <label for="nama">Nama Voucher: </label>
@@ -56,7 +56,7 @@ if(isset($_GET['kode'])){
             <?php
             echo "<option value='none' selected disabled hidden>Select an Option</option>";
             echo "<option value='none'></option>";
-            $res = $jenisMenu->getJenisMenu();
+            $res = $_JenisMenu->getJenisMenu();
             while($row = $res->fetch_assoc()) { echo "<option value=".$row["kode"].">".$row['nama']."</option>";}
             ?>
         </select>
@@ -67,7 +67,7 @@ if(isset($_GET['kode'])){
             <?php
             echo "<option value='none' selected disabled hidden>Select an Option</option>";
             echo "<option value='none'></option>";
-            $res = $menu->getMenu();
+            $res = $_Menu->getMenu();
             while($row = $res->fetch_assoc()) 
             {echo "<option value=".$row["kode"].">".$row['nama_m']."</option>";}
             ?>

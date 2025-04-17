@@ -42,7 +42,7 @@ if(isset($_POST['update'])){
 </head>
 <body>
     <div>
-    <a href="admin.php">admin page</a>
+    <a href="index.php">admin page</a>
     <h1>Update menu: <?=$nama?></h1>
     <form action="ubahmenu.php"  method="post" enctype="multipart/form-data">
         <input type="hidden" name="kode" value="<?=$kode?>">
@@ -56,7 +56,7 @@ if(isset($_POST['update'])){
             <?php
             echo "<option value='none' selected disabled hidden>Select an Option</option>";
             $res = $jenisMenu->getJenisMenu();
-            while($row = $res->fetch_assoc()) 
+            while($row = $res->fetch_assoc())
             { echo ($row["kode"]==$jenis)?
             "<option value=".$row["kode"]." selected>".$row['nama']."</option>":
             "<option value=".$row["kode"].">".$row['nama']."</option>";}

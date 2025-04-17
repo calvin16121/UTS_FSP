@@ -28,7 +28,7 @@ if(isset($_GET['kode'])){
 </head>
 <body>
     <div>
-    <a href="admin.php">admin page</a>
+    <a href="index.php">admin page</a>
     <h1>Kelola jenis menu</h1>
     <form action="jenismenu.php" method="post">
         <label for="nama">Masukan Jenis Menu: </label>

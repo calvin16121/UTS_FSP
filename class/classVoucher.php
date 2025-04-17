@@ -28,7 +28,7 @@ class classVoucher extends classDB{
 		return $res->num_rows;
 	}
     public function getVoucherKode($kode) {
-        $sql = "SELECT * FROM menu_jenis WHERE kode=?";
+        $sql = "SELECT * FROM voucher WHERE kode=?";
 		$stmt = $this->mysqli->prepare($sql);
 		$stmt->bind_param('i', $kode);
 
@@ -59,58 +59,57 @@ class classVoucher extends classDB{
     }
 
     public function updateVoucher($menu, $jenis, $nama, $start, $end, $kuota, $diskon, $kode){
-    if($start>$end){echo "end date can't occur before start date";}
-    else{
-        if($menu == "" && $jenis == ""){
-            echo "null exception";
-        }
-        else if($menu == ""){
-            $stmt = $this->mysqli->prepare(
-                "UPDATE `voucher` SET 
-                        `kode_jenis` = ?, 
-                        `nama` = ?, 
-                        `mulai_berlaku` = ?, 
-                        `akhir_berlaku` = ?, 
-                        `kuota_max` = ?,
-                        `kuota_sisa` = ?,
-                        `persen_diskon` = ? 
-                        WHERE (`kode` = ?);");
-            $stmt->bind_param('isssiiii',$jenis, $nama, $start, $end, $kuota,$kuota, $diskon, $kode);
-            $stmt->execute();
-            $stmt->close();
-        }
-        else if($jenis == ""){
-            $stmt = $this->mysqli->prepare(
-                "UPDATE `voucher` SET 
-                        `kode_menu` = ?, 
-                        `nama` = ?, 
-                        `mulai_berlaku` = ?, 
-                        `akhir_berlaku` = ?, 
-                        `kuota_max` = ?,
-                        `kuota_sisa` = ?,
-                        `persen_diskon` = ? 
-                        WHERE (`kode` = ?);");
-            $stmt->bind_param('isssiiii',$menu, $nama, $start, $end, $kuota,$kuota, $diskon, $kode);
-            $stmt->execute();
-            $stmt->close();
-        }
+        if($start>$end){echo "end date can't occur before start date";}
         else{
-            $stmt = $this->mysqli->prepare(
-                "UPDATE `voucher` SET 
-                        `kode_menu` = ?,
-                        `kode_jenis` = ?,
-                        `nama` = ?, 
-                        `mulai_berlaku` = ?, 
-                        `akhir_berlaku` = ?, 
-                        `kuota_max` = ?,
-                        `kuota_sisa` = ?,
-                        `persen_diskon` = ? 
-                        WHERE (`kode` = ?);");
-            $stmt->bind_param('iisssiiii',$menu,$jenis, $nama, $start, $end, $kuota, $kuota, $diskon, $kode);
-            $stmt->execute();
-            $stmt->close();
+            if($menu == ""){
+                $stmt = $this->mysqli->prepare(
+                    "UPDATE `voucher` SET 
+                            `kode_menu` = NULL,
+                            `kode_jenis` = ?, 
+                            `nama` = ?, 
+                            `mulai_berlaku` = ?, 
+                            `akhir_berlaku` = ?, 
+                            `kuota_max` = ?,
+                            `kuota_sisa` = ?,
+                            `persen_diskon` = ? 
+                            WHERE (`kode` = ?);");
+                $stmt->bind_param('isssiiii',$jenis, $nama, $start, $end, $kuota,$kuota, $diskon, $kode);
+                $stmt->execute();
+                $stmt->close();
+            }
+            else if($jenis == ""){
+                $stmt = $this->mysqli->prepare(
+                    "UPDATE `voucher` SET 
+                            `kode_menu` = ?, 
+                            `kode_jenis` = NULL, 
+                            `nama` = ?, 
+                            `mulai_berlaku` = ?, 
+                            `akhir_berlaku` = ?, 
+                            `kuota_max` = ?,
+                            `kuota_sisa` = ?,
+                            `persen_diskon` = ? 
+                            WHERE (`kode` = ?);");
+                $stmt->bind_param('isssiiii',$menu, $nama, $start, $end, $kuota, $kuota, $diskon, $kode);
+                $stmt->execute();
+                $stmt->close();
+            }
+            else{
+                $stmt = $this->mysqli->prepare(
+                    "UPDATE `voucher` SET 
+                            `kode_menu` = ?,
+                            `kode_jenis` = ?,
+                            `nama` = ?, 
+                            `mulai_berlaku` = ?, 
+                            `akhir_berlaku` = ?, 
+                            `kuota_max` = ?,
+                            `kuota_sisa` = ?,
+                            `persen_diskon` = ? 
+                            WHERE (`kode` = ?);");
+                $stmt->bind_param('iisssiiii',$menu,$jenis, $nama, $start, $end, $kuota, $kuota, $diskon, $kode);
+                $stmt->execute();
+                $stmt->close();
+            }
         }
-    }
     }
 }
 ?>

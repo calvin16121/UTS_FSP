@@ -1,9 +1,14 @@
 <?php
 require_once("../class/classVoucher.php");
+require_once("../class/classJenisMenu.php");
+require_once("../class/classMenu.php");
 session_start();
 $voucher = new classVoucher();
+$_JenisMenu = new classJenisMenu();
+$_Menu = new classMenu();
 $message = "";
 
+// buat inisiasi data
 if(isset($_GET['kode'])){
     $kode = $_GET['kode'];
     $res = $voucher->getVoucherKode($kode);
@@ -24,13 +29,13 @@ if(isset($_GET['kode'])){
 if(isset($_POST['update'])){
     $kode = $_POST['kode'];
     $nama = $_POST['nama'];
-    $jenis = $_POST['jenis'] ?? "";
-    $menu = $_POST['menu'] ?? "";
+    $jenis = ($_POST['jenis'] === 'none') ? NULL : $_POST['jenis'];
+    $menu = ($_POST['menu'] === 'none') ? NULL : $_POST['menu'];
     $start = $_POST["start"];
     $end = $_POST["end"];
     $kuota = $_POST["kuota"];
     $diskon = $_POST["diskon"];
-    $voucher->updateVoucher($jenis, $nama, $start, $end, $kuota,$kuota, $diskon, $kode);
+    $voucher->updateVoucher($menu, $jenis, $nama, $start, $end, $kuota, $diskon, $kode);
     header("Location: voucher.php");
     exit;
 }
@@ -46,7 +51,7 @@ if(isset($_POST['update'])){
 </head>
 <body>
     <div>
-    <a href="admin.php">admin page</a>
+    <a href="index.php">admin page</a>
     <h1>Update Voucher: <?=$nama?></h1>
     <form action="ubahvoucher.php" method="post">
         <input type="hidden" name="kode" value="<?=$kode?>">
@@ -60,14 +65,11 @@ if(isset($_POST['update'])){
             <?php
             if($jenis==""){echo "<option value='none' selected disabled hidden>Select an Option</option>";};
             echo "<option value='none'></option>";
-            $stmt = $mysqli->prepare("SELECT * FROM menu_jenis");
-            $stmt->execute();
-            $res = $stmt->get_result();
+            $res = $_JenisMenu->getJenisMenu();
             while($row = $res->fetch_assoc()) { 
                 echo ($row['kode']==$jenis)?
                 "<option value=".$row["kode"]." selected>".$row['nama']."</option>":
                 "<option value=".$row["kode"].">".$row['nama']."</option>";}
-            $stmt->close();
             ?>
         </select>
 
@@ -77,14 +79,11 @@ if(isset($_POST['update'])){
             <?php
             if($menu==""){echo "<option value='none' selected disabled hidden>Select an Option</option>";}
             echo "<option value='none'></option>";
-            $stmt = $mysqli->prepare("SELECT * FROM menu");
-            $stmt->execute();
-            $res = $stmt->get_result();
+            $res = $_Menu->getMenu();
             while($row = $res->fetch_assoc()) { 
                 echo ($row['kode']==$menu)?
-                "<option value=".$row["kode"]." selected>".$row['nama']."</option>":
-                "<option value=".$row["kode"].">".$row['nama']."</option>";}
-            $stmt->close();
+                "<option value=".$row["kode"]." selected>".$row['nama_m']."</option>":
+                "<option value=".$row["kode"].">".$row['nama_m']."</option>";}
             ?>
         </select>
 
@@ -110,5 +109,3 @@ if(isset($_POST['update'])){
     </div>
 </body>
 </html>
-
-<?php $mysqli->close();?>

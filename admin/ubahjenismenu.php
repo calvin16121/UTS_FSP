@@ -26,7 +26,7 @@ if(isset($_POST['update'])){
 </head>
 <body>
     <div>
-    <a href="admin.php">admin page</a>
+    <a href="index.php">admin page</a>
     <h1>Update jenis menu: <?=$nama?></h1>
     <form action="ubahjenismenu.php?kode=<?=$kode?>" method="post">
         <input type="hidden" name="kode" value="<?=$kode?>">

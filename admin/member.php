@@ -33,7 +33,7 @@ if(isset($_GET['kode']) && isset($_GET['aksi'])){
     </style>
 </head>
 <body>
-    <a href="admin.php">admin page</a>
+    <a href="index.php">admin page</a>
     
     <div style="margin: 20px 0;">
         <button class="tab <?= !$show_active ? 'active-tab' : '' ?>" 
