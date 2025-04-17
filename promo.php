@@ -1,8 +1,3 @@
-<?
-$mysqli = new mysqli("localhost","root","","fullstack");
-if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,5 +27,3 @@ if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_e
     </div>
 </body>
 </html>
-
-<? $mysqli->close();?>

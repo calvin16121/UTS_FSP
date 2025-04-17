@@ -1,9 +1,5 @@
 <?php
 session_start();
-
-$mysqli = new mysqli("localhost","root","","fullstack");
-if($mysqli->connect_errno){ die("Failed to connect t MySQL: ".$mysqli->connect_error);}
-
 $message = "Welcome";
 if($_SESSION["USER"]){ $message = "Welcome, ".$_SESSION["USER"]; }
 else{ header("location: login.php"); }
@@ -37,5 +33,3 @@ else{ header("location: login.php"); }
     </div>
 </body>
 </html>
-
-<?php $mysqli->close();?>
