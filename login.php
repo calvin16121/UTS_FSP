@@ -41,39 +41,46 @@ if (isset($_POST['login'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Koffee StartBug</title>
     <link rel="stylesheet" href="index.css">
+    <style>
+        form{
+            border:1px #683416 solid; 
+            padding: 20px; 
+            border-radius: 20px;
+        }
+        form div{
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
-    <!-- header -->
-    <!-- <header id="header">
-    <div class="logo">
-        <a href="index.php">LOGO</a>
-    </div>
-    <div>
-        <a href="menu.php">Menu</a>
-        <a href="promo.php">Promo</a>
-        <a href="voucherku.php">Voucherku</a>
-    </div>
-    <div class="login">
-        <a href="login.php">Login</a>
-    </div>
-    </header> -->
-
     <div id="content">
-        <h1>Log in</h1>
+        <h1>Welcome to Koffee StartBug</h1>
         <form action="login.php" method="post">
-            <label for="iduser">Username</label>
-            <input type="text" name="iduser" value="<?=$iduser?>" required>
-            <br>
-            <label for="password">Password</label>
-            <input type="password" name="password" required>
-            <br>
-            <label for="remember">Remember Me</label>
-            <input type="checkbox" name="remember" id="remember">
-            <br>
-            <input type="submit" value="login" name="login">
+            <div>
+                <label for="iduser">Username</label>
+                <input type="text" name="iduser" id="iduser" value="<?=$iduser?>" required placeholder="Enter your username">
+            </div>
+            
+            <div>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required placeholder="Enter your password">
+            </div>
+            
+            <div>
+                <input type="checkbox" name="remember" id="remember">
+                <label for="remember">Remember Me</label>
+            </div>
+            
+            <input type="submit" value="Login" name="login" 
+            style="width: 80px;
+            padding:10px; 
+            border-radius: 30%; 
+            border: 0px; 
+            background-color: #683416; 
+            color:wheat">
         </form>
-        <a href="register.php">register</a>
-        <p><?=$message?></p>
+        <a href="register.php" class="register-link">Don't have an account? Register here</a>
+        <p class="message"><?=$message?></p>
     </div>
 </body>
 </html>

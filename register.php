@@ -29,27 +29,53 @@ if (isset($_POST['register'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Koffee StartBug</title>
     <link rel="stylesheet" href="index.css">
+    <style>
+        form{
+            border:1px #683416 solid; 
+            padding: 20px; 
+            border-radius: 20px;
+        }
+        form div{
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
     <div id="content">
         <h1>Register</h1>
         <form action="register.php" method="post">
+            <div>
             <label for="iduser">Username</label>
             <input type="text" name="iduser" required>
-            <br>
+            </div>
+
+            <div>
             <label for="password">Password</label>
             <input type="password" name="password" required>
-            <br>
+            </div>
+
+            <div>
             <label for="nama">Nama</label>
             <input type="text" name="nama" required>
-            <br>
+            </div>
+
+            <div>
             <label for="tgllahir">Tanggal Lahir</label>
             <input type="date" name="tgllahir" required>
-            <br>
+            </div>
+
+            <div>
             <label for="foto">Foto</label>
             <input type="text" name="foto" required>
-            <br>
-            <input type="submit" value="register" name="register">
+            </div>
+            
+            <input type="submit" value="register" name="register"
+            style="width: 80px;
+            padding:10px; 
+            border-radius: 30%; 
+            border: 0px; 
+            background-color: #683416; 
+            color:wheat">
         </form>
         <p><?=$message?></p>
     </div>

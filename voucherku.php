@@ -9,17 +9,13 @@
 <body>
     <!-- header -->
     <header id="header">
-    <div class="logo">
-        <a href="index.php">LOGO</a>
-    </div>
-    <div>
-        <a href="menu.php">Menu</a>
-        <a href="promo.php">Promo</a>
-        <a href="voucherku.php">Voucherku</a>
-    </div>
-    <div class="login">
-        <a href="login.php">Login</a>
-    </div>
+        <div style="display: flex; gap: 20px;">
+            <a href="index.php">Home</a>
+            <a href="menu.php">Menu</a>
+            <a href="promo.php">Promo</a>
+            <a href="voucherku.php">Voucherku</a>
+        </div>
+        <a href="logout.php" style="position: absolute; right: 30px;">Log out</a>
     </header>
 
     <div id="content">

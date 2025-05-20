@@ -34,6 +34,34 @@ class classMenu extends classDB{
         $res = $stmt->get_result();
 		return $res;
     }
+    public function getRandomMenu() {
+        $sql = "SELECT m.kode, m.nama as nama_m,mj.nama 
+                AS nama_mj,m.harga_jual,m.url_gambar 
+                FROM menu_jenis AS mj 
+                INNER JOIN menu AS m 
+                ON m.kode_jenis = mj.kode
+                ORDER BY RAND() LIMIT 10";
+		$stmt = $this->mysqli->prepare($sql);
+		$stmt->execute();
+		$res = $stmt->get_result();
+        $stmt->close();
+		return $res;
+    }
+    public function getSearchMenu($keyword) {
+        $sql = "SELECT m.kode, m.nama as nama_m,mj.nama 
+                AS nama_mj,m.harga_jual,m.url_gambar 
+                FROM menu_jenis AS mj 
+                INNER JOIN menu AS m 
+                ON m.kode_jenis = mj.kode
+                WHERE m.nama LIKE ?";
+		$stmt = $this->mysqli->prepare($sql);
+        $keyword = "%" . $keyword . "%";
+        $stmt->bind_param("s", $keyword);
+		$stmt->execute();
+		$res = $stmt->get_result();
+        $stmt->close();
+		return $res;
+    }
     
 
     public function insertMenu($jenis, $nama, $harga, $gambar){
