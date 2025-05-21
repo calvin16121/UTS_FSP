@@ -2,6 +2,9 @@
 session_start();
 require_once("class/classMenu.php");
 $menu = new classMenu();
+
+require_once("class/classJenisMenu.php");
+$jenis = new classJenisMenu();
 ?>
 
 <!DOCTYPE html>
@@ -35,11 +38,7 @@ $menu = new classMenu();
         </form>
         </div>
 
-        <div style="
-        display: grid; 
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-        gap: 50px;
-        justify-content: center;">
+        <div class="grid-template">
             <?php
             $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
             $res = $menu->getSearchMenu($keyword);

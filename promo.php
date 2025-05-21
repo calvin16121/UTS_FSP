@@ -27,10 +27,7 @@ $voucher = new classVoucher();
     <div id="content">
         <h1>Promo</h1>
 
-        <div style="
-        display: grid; 
-        gap: 50px;
-        justify-content: center;">
+        <div class="grid-template">
             <?php
             $res = $voucher->getVoucher();
             while($row = $res->fetch_assoc()){

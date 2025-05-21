@@ -35,9 +35,15 @@ table, th, td {
     padding: 10px;
 }
 
+.grid-template{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 50px;
+    justify-content: center;
+}
+
 .card {
     width: 320px;
-    /* height: 320px; */
     background: #fff;
     border-radius: 20px;
     margin: 10px;
