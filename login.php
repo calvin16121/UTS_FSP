@@ -39,16 +39,102 @@ if (isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Koffee StartBug</title>
+    <title>Koffee StartBug - Login</title>
     <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        form{
-            border:1px #683416 solid; 
-            padding: 20px; 
-            border-radius: 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
-        form div{
-            margin: 10px;
+
+        body {
+            background-color: #fdf6f0;
+            color: #4a2e1e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #content {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(104, 52, 22, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 24px;
+            color: #683416;
+        }
+
+        form {
+            text-align: left;
+        }
+
+        form div {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        input[type="checkbox"] {
+            transform: scale(1.2);
+            margin-right: 8px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #683416;
+            color: wheat;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #5a2d15;
+        }
+
+        .register-link {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #683416;
+            font-weight: 500;
+        }
+
+        .register-link:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            margin-top: 15px;
+            color: red;
+            font-size: 14px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -68,16 +154,10 @@ if (isset($_POST['login'])) {
             
             <div>
                 <input type="checkbox" name="remember" id="remember">
-                <label for="remember">Remember Me</label>
+                <label for="remember" style="display:inline;">Remember Me</label>
             </div>
             
-            <input type="submit" value="Login" name="login" 
-            style="width: 80px;
-            padding:10px; 
-            border-radius: 30%; 
-            border: 0px; 
-            background-color: #683416; 
-            color:wheat">
+            <input type="submit" value="Login" name="login">
         </form>
         <a href="register.php" class="register-link">Don't have an account? Register here</a>
         <p class="message"><?=$message?></p>

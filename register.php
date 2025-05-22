@@ -27,16 +27,90 @@ if (isset($_POST['register'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Koffee StartBug</title>
+    <title>Koffee StartBug - Register</title>
     <link rel="stylesheet" href="index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        form{
-            border:1px #683416 solid; 
-            padding: 20px; 
-            border-radius: 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
-        form div{
-            margin: 10px;
+
+        body {
+            background-color: #fdf6f0;
+            color: #4a2e1e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #content {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(104, 52, 22, 0.2);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #683416;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        input[type="submit"] {
+            padding: 12px;
+            background-color: #683416;
+            color: wheat;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #5a2d15;
+        }
+
+        p {
+            margin-top: 15px;
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @media (max-width: 500px) {
+            #content {
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -45,37 +119,31 @@ if (isset($_POST['register'])) {
         <h1>Register</h1>
         <form action="register.php" method="post">
             <div>
-            <label for="iduser">Username</label>
-            <input type="text" name="iduser" required>
+                <label for="iduser">Username</label>
+                <input type="text" name="iduser" id="iduser" required>
             </div>
 
             <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" required>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
             </div>
 
             <div>
-            <label for="nama">Nama</label>
-            <input type="text" name="nama" required>
+                <label for="nama">Nama</label>
+                <input type="text" name="nama" id="nama" required>
             </div>
 
             <div>
-            <label for="tgllahir">Tanggal Lahir</label>
-            <input type="date" name="tgllahir" required>
+                <label for="tgllahir">Tanggal Lahir</label>
+                <input type="date" name="tgllahir" id="tgllahir" required>
             </div>
 
             <div>
-            <label for="foto">Foto</label>
-            <input type="text" name="foto" required>
+                <label for="foto">Link Foto</label>
+                <input type="text" name="foto" id="foto" required placeholder="https://...">
             </div>
             
-            <input type="submit" value="register" name="register"
-            style="width: 80px;
-            padding:10px; 
-            border-radius: 30%; 
-            border: 0px; 
-            background-color: #683416; 
-            color:wheat">
+            <input type="submit" value="Register" name="register">
         </form>
         <p><?=$message?></p>
     </div>
