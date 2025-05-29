@@ -9,6 +9,7 @@ if (!isset($_SESSION['iduser'])) {
 
 $voucher = new classVoucher();
 $iduser = $_SESSION['iduser'];
+$res = $voucher->getVoucherUser($iduser);
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +22,6 @@ $iduser = $_SESSION['iduser'];
 </head>
 <body>
 
-<!-- Header -->
 <header id="header">
     <div style="display: flex; gap: 20px;">
         <a href="index.php">Home</a>
@@ -32,30 +32,26 @@ $iduser = $_SESSION['iduser'];
     <a href="logout.php" style="position: absolute; right: 30px;">Log out</a>
 </header>
 
-<!-- Content -->
 <div id="content">
     <h1>Voucherku</h1>
     <div class="grid-template">
         <?php
-        $res = $voucher->getVoucherUser($iduser);
-
-        if ($res && $res->num_rows > 0) {
-            while ($row = $res->fetch_assoc()) {
+        if (!empty($res) && count($res) > 0) {
+            foreach ($res as $row) {
                 echo "
                 <div class='card'>
                     <div class='card-content'>
-                        <h1 style='margin:30px 10px;'>".htmlspecialchars($row["vnama"])."</h1>
-                        <h3 style='margin:10px;'>Menu: ".htmlspecialchars($row["mnama"])."</h3>
-                        <h3 style='margin:10px;'>Jenis Menu: ".htmlspecialchars($row["mjnama"])."</h3>
-                        <h3 style='margin:10px;'>Diskon: ".htmlspecialchars($row["persen_diskon"])."%</h3>
+                        <h2>".htmlspecialchars($row["vnama"])."</h2>
+                        <p><strong>Menu:</strong> ".htmlspecialchars($row["mnama"])."</p>
+                        <p><strong>Jenis Menu:</strong> ".htmlspecialchars($row["mjnama"])."</p>
+                        <p><strong>Diskon:</strong> ".htmlspecialchars($row["persen_diskon"])."%</p>
                     </div>
                     <div class='card-footer'>
-                        <a href='gunakan_voucher.php?id=".htmlspecialchars($row["vid"])."'>
+                        <a href='gunakan_voucher.php?id=".urlencode($row["kode"])."'>
                             <button class='btn-claim'>Gunakan</button>
                         </a>
                     </div>
-                </div>
-                ";
+                </div>";
             }
         } else {
             echo "<p style='margin: 20px;'>Kamu belum memiliki voucher. Klaim dari halaman promo.</p>";

@@ -2,7 +2,7 @@
 session_start();
 require_once("class/classVoucher.php");
 
-if (!isset($_SESSION['id'])) {
+if (!isset($_SESSION['iduser'])) {
     echo "Silakan login terlebih dahulu.";
     exit;
 }
@@ -12,7 +12,7 @@ if (!isset($_GET['voucher_id'])) {
     exit;
 }
 
-$user_id = $_SESSION['id'];
+$user_id = $_SESSION['iduser']; 
 $voucher_id = intval($_GET['voucher_id']);
 
 $voucher = new classVoucher();
