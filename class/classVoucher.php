@@ -38,6 +38,51 @@ class classVoucher extends classDB{
 		return $res;
     }
 
+    public function claimVoucher($user_id, $voucher_id) {
+    // Cek apakah voucher tersedia (kuota_sisa > 0)
+    $stmt = $this->mysqli->prepare("SELECT kuota_sisa FROM voucher WHERE kode = ?");
+    $stmt->bind_param('i', $voucher_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $voucher = $result->fetch_assoc();
+    $stmt->close();
+
+    if (!$voucher) {
+        return "Voucher tidak ditemukan.";
+    }
+
+    if ($voucher['kuota_sisa'] <= 0) {
+        return "Kuota voucher sudah habis.";
+    }
+
+    // Cek apakah user sudah klaim voucher ini sebelumnya
+    $stmt = $this->mysqli->prepare("SELECT id FROM voucher_user WHERE user_id = ? AND voucher_id = ?");
+    $stmt->bind_param('ii', $user_id, $voucher_id);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+        $stmt->close();
+        return "Kamu sudah klaim voucher ini sebelumnya.";
+    }
+    $stmt->close();
+
+    // Masukkan klaim ke tabel voucher_user
+    $stmt = $this->mysqli->prepare(
+        "INSERT INTO voucher_user (user_id, voucher_id, status, created_at) VALUES (?, ?, 'claimed', NOW())"
+    );
+    $stmt->bind_param('ii', $user_id, $voucher_id);
+    $stmt->execute();
+    $stmt->close();
+
+    // Kurangi kuota_sisa di tabel voucher
+    $stmt = $this->mysqli->prepare("UPDATE voucher SET kuota_sisa = kuota_sisa - 1 WHERE kode = ?");
+    $stmt->bind_param('i', $voucher_id);
+    $stmt->execute();
+    $stmt->close();
+
+    return "Voucher berhasil diklaim.";
+}
+
     public function insertVoucher($menu,$jenis, $nama, $start, $end, $kuota, $diskon){
         $stmt = $this->mysqli->prepare(
         "INSERT INTO `voucher` 

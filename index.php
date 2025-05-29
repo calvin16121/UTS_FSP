@@ -41,7 +41,6 @@ else{ $message = ""; }
     </style>
 </head>
 <body>
-    <!-- header -->
     <header id="header">
         <div style="display: flex; gap: 20px;">
             <a href="index.php">Home</a>
@@ -52,7 +51,6 @@ else{ $message = ""; }
         <a href="logout.php" style="position: absolute; right: 30px;">Log out</a>
     </header>
     
-    <!-- background -->
     <div style="
         height: 100vh;
         width: 100%;
@@ -65,7 +63,6 @@ else{ $message = ""; }
         z-index: -1;">
     </div>
     
-    <!-- overlay -->
     <div style="
         background-color: rgba(0,0,0,0.6);
         height: 100vh;
@@ -76,7 +73,6 @@ else{ $message = ""; }
         z-index: 0;">
     </div>
     
-    <!-- content -->
     <div style="
         position: relative;
         z-index: 1;

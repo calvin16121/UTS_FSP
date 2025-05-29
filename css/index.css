@@ -86,3 +86,37 @@ table, th, td {
 .btn-claim:hover {
     background-color: #6D4C41;
 }
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    width: 200px;
+    text-align: left;
+}
+
+.navbar {
+    background-color: #924d0b;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.navbar a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.navbar a.logout {
+    margin-left: auto;
+    color: #ffe3e3;
+}
